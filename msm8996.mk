@@ -150,9 +150,6 @@ PRODUCT_PACKAGES += \
     liboverlay \
     libqdMetaData.system
 
-# Doze mode
-PRODUCT_PACKAGES += \
-    LGDoze
 
 # DRM
 PRODUCT_PACKAGES += \
