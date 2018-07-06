@@ -49,7 +49,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vidc.enc.dcvs.extra-buff-count=2 \
     persist.audio.camcorder.stereo=true \
     persist.camera.preview.ubwc=0 \
-    persist.camera.video.ubwc=0
+    persist.camera.video.ubwc=0 \
+    vendor.camera.aux.packagelist=all
 
 # CNE and DPM
 PRODUCT_PROPERTY_OVERRIDES += \
