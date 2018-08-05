@@ -140,6 +140,9 @@ on early-boot
 on boot
     # Bring up CPUs
     start power-sh
+    
+    # register modules
+    start modules-sh
 
     # Set permissions by node reads by dumpstate
     chmod 0644 /sys/devices/system/cpu/present
@@ -781,6 +784,12 @@ service qti /vendor/bin/qti
     user radio
     group radio net_raw oem_2901 usb net_admin
     writepid /dev/cpuset/system-background/tasks
+    
+service modules-sh /vendor/bin/start_modules.sh
+    class core
+    user root
+    disabled
+    oneshot
 
 service graphics-sh /vendor/bin/init.qcom.graphics.sh
     class core
