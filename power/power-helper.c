@@ -41,7 +41,7 @@
 #include <time.h>
 
 #define LOG_TAG "QCOM PowerHAL"
-#include <utils/Log.h>
+#include <log/log.h>
 #include <hardware/power.h>
 #include <cutils/properties.h>
 

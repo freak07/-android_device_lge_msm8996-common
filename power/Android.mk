@@ -49,6 +49,8 @@ LOCAL_SHARED_LIBRARIES := \
     liblog \
     libutils \
     android.hardware.power@1.1 \
+    
+LOCAL_HEADER_LIBRARIES := libhardware_headers
 
 include $(BUILD_EXECUTABLE)
 endif
