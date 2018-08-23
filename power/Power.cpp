@@ -18,10 +18,11 @@
 
 #include <android/log.h>
 #include <utils/Log.h>
-
+#include <android-base/file.h>
 #include <android-base/properties.h>
-
+#include <android-base/strings.h>
 #include "Power.h"
+#include "power-common.h"
 #include "power-helper.h"
 
 /* RPM runs at 19.2Mhz. Divide by 19200 for msec */
@@ -50,6 +51,9 @@ Power::Power() {
 
 // Methods from ::android::hardware::power::V1_0::IPower follow.
 Return<void> Power::setInteractive(bool interactive)  {
+    if (!isSupportedGovernor()) {
+        return Void();
+    }
     power_set_interactive(interactive ? 1 : 0);
     return Void();
 }
@@ -59,7 +63,12 @@ Return<void> Power::powerHint(PowerHint hint, int32_t data) {
         ALOGW("perfd is not started");
         return Void();
     }
-    power_hint(static_cast<power_hint_t>(hint), data ? (&data) : NULL);
+
+    power_hint_t h = static_cast<power_hint_t>(hint);
+    if (!isSupportedGovernor()) {
+        return Void();
+    }
+    power_hint(h, data ? &data : NULL);
     return Void();
 }
 
@@ -167,6 +176,20 @@ Return<void> Power::getSubsystemLowPowerStats(getSubsystemLowPowerStats_cb _hidl
 done:
     _hidl_cb(subsystems, Status::SUCCESS);
     return Void();
+}
+
+bool Power::isSupportedGovernor() {
+    std::string buf;
+    if (android::base::ReadFileToString(SCALING_GOVERNOR_PATH, &buf)) {
+        buf = android::base::Trim(buf);
+    }
+    // Only support EAS 1.2, legacy EAS and HMP
+    if (buf == SCHEDUTIL_GOVERNOR || buf == SCHED_GOVERNOR || buf == INTERACTIVE_GOVERNOR) {
+        return true;
+    } else {
+        ALOGE("Governor not supported by powerHAL, skipping");
+        return false;
+    }
 }
 
 Return<void> Power::powerHintAsync(PowerHint hint, int32_t data) {

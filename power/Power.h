@@ -50,6 +50,8 @@ struct Power : public IPower {
 
     // Methods from ::android::hidl::base::V1_0::IBase follow.
 
+ private:
+    static bool isSupportedGovernor();
 };
 
 }  // namespace implementation
