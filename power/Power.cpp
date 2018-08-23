@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "android.hardware.power@1.1-service.marlin"
+#define LOG_TAG "android.hardware.power@1.1-service.lge.msm8996"
 
 #include <android/log.h>
 #include <utils/Log.h>
@@ -53,7 +53,7 @@ Return<void> Power::setInteractive(bool interactive)  {
 }
 
 Return<void> Power::powerHint(PowerHint hint, int32_t data) {
-    if (android::base::GetProperty("init.svc.vendor.perfd", "") != "running") {
+    if (android::base::GetProperty("init.svc.perfd", "") != "running") {
         ALOGW("perfd is not started");
         return Void();
     }
