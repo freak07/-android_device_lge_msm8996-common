@@ -87,11 +87,8 @@
 /sys/devices/virtual/camera(/.*)?                       u:object_r:sysfs_camera:s0
 
 # perfd modifications
-#disabled for bringing in marlin
-#/(vendor|system/vendor)/bin/hw/android\.hardware\.power@1\.0-service.marlin         u:object_r:hal_power_default_exec:s0
-
-#lineage update
-/(vendor|system/vendor)/bin/hw/android\.hardware\.power@1\.0-service.lge.msm8996         u:object_r:hal_power_default_exec:s0
+# New Marlin Power Hal 1.1:
+/vendor/bin/hw/android\.hardware\.power@1\.1-service.marlin          u:object_r:hal_power_default_exec:s0
 
 # perfd
 /(vendor|system/vendor)/bin/perfd                                   u:object_r:perfd_exec:s0
