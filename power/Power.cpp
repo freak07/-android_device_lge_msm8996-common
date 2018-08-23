@@ -27,6 +27,8 @@
 /* RPM runs at 19.2Mhz. Divide by 19200 for msec */
 #define RPM_CLK 19200
 
+extern struct stat_pair rpm_stat_map[];
+
 namespace android {
 namespace hardware {
 namespace power {
@@ -62,15 +64,19 @@ Return<void> Power::powerHint(PowerHint hint, int32_t data) {
 }
 
 Return<void> Power::setFeature(Feature /*feature*/, bool /*activate*/)  {
+    //Nothing to do
     return Void();
 }
 
 Return<void> Power::getPlatformLowPowerStats(getPlatformLowPowerStats_cb _hidl_cb) {
 
     hidl_vec<PowerStatePlatformSleepState> states;
-    uint64_t stats[platform_param_id::PLATFORM_PARAM_COUNT] = {0};
+    uint64_t stats[MAX_PLATFORM_STATS * MAX_RPM_PARAMS] = {0};
+    uint64_t *values;
     struct PowerStatePlatformSleepState *state;
     int ret;
+
+    states.resize(PLATFORM_SLEEP_MODES_COUNT);
 
     ret = extract_platform_stats(stats);
     if (ret != 0) {
@@ -78,48 +84,30 @@ Return<void> Power::getPlatformLowPowerStats(getPlatformLowPowerStats_cb _hidl_c
         goto done;
     }
 
-    states.resize(platform_mode_id::RPM_MODE_COUNT);
-
     /* Update statistics for XO_shutdown */
-    state = &states[platform_mode_id::RPM_MODE_XO];
+    state = &states[RPM_MODE_XO];
     state->name = "XO_shutdown";
+    values = stats + (RPM_MODE_XO * MAX_RPM_PARAMS);
 
-    state->residencyInMsecSinceBoot = stats[platform_param_id::ACCUMULATED_VLOW_TIME];
-    state->totalTransitions = stats[platform_param_id::VLOW_COUNT];
+    state->residencyInMsecSinceBoot = values[1];
+    state->totalTransitions = values[0];
     state->supportedOnlyInSuspend = false;
     state->voters.resize(XO_VOTERS);
-
-    /* Update statistics for APSS voter */
-    state->voters[0].name = "APSS";
-    state->voters[0].totalTimeInMsecVotedForSinceBoot =
-        stats[platform_param_id::XO_ACCUMULATED_DURATION_APSS] / RPM_CLK;
-    state->voters[0].totalNumberOfTimesVotedSinceBoot = stats[platform_param_id::XO_COUNT_APSS];
-
-    /* Update statistics for MPSS voter */
-    state->voters[1].name = "MPSS";
-    state->voters[1].totalTimeInMsecVotedForSinceBoot =
-        stats[platform_param_id::XO_ACCUMULATED_DURATION_MPSS] / RPM_CLK;
-    state->voters[1].totalNumberOfTimesVotedSinceBoot = stats[platform_param_id::XO_COUNT_MPSS];
-
-    /* Update statistics for ADSP voter */
-    state->voters[2].name = "ADSP";
-    state->voters[2].totalTimeInMsecVotedForSinceBoot =
-        stats[platform_param_id::XO_ACCUMULATED_DURATION_ADSP] / RPM_CLK;
-    state->voters[2].totalNumberOfTimesVotedSinceBoot = stats[platform_param_id::XO_COUNT_ADSP];
-
-    /* Update statistics for SLPI voter */
-    state->voters[3].name = "SLPI";
-    state->voters[3].totalTimeInMsecVotedForSinceBoot =
-        stats[platform_param_id::XO_ACCUMULATED_DURATION_SLPI] / RPM_CLK;
-    state->voters[3].totalNumberOfTimesVotedSinceBoot = stats[platform_param_id::XO_COUNT_SLPI];
-
+    for(size_t i = 0; i < XO_VOTERS; i++) {
+        int voter = static_cast<int>(i + XO_VOTERS_START);
+        state->voters[i].name = rpm_stat_map[voter].label;
+        values = stats + (voter * MAX_RPM_PARAMS);
+        state->voters[i].totalTimeInMsecVotedForSinceBoot = values[0] / RPM_CLK;
+        state->voters[i].totalNumberOfTimesVotedSinceBoot = values[1];
+    }
 
     /* Update statistics for VMIN state */
-    state = &states[platform_mode_id::RPM_MODE_VMIN];
+    state = &states[RPM_MODE_VMIN];
     state->name = "VMIN";
+    values = stats + (RPM_MODE_VMIN * MAX_RPM_PARAMS);
 
-    state->residencyInMsecSinceBoot = stats[platform_param_id::ACCUMULATED_VMIN_TIME];
-    state->totalTransitions = stats[platform_param_id::VMIN_COUNT];
+    state->residencyInMsecSinceBoot = values[1];
+    state->totalTransitions = values[0];
     state->supportedOnlyInSuspend = false;
     state->voters.resize(VMIN_VOTERS);
     //Note: No filling of state voters since VMIN_VOTERS = 0
@@ -129,12 +117,9 @@ done:
     return Void();
 }
 
-
-// Methods from ::android::hardware::power::V1_1::IPower follow.
-
 static int get_wlan_low_power_stats(struct PowerStateSubsystem &subsystem) {
 
-    uint64_t stats[WLAN_PARAM_COUNT] = {0};
+    uint64_t stats[WLAN_POWER_PARAMS_COUNT] = {0};
     struct PowerStateSubsystemSleepState *state;
     int ret;
 
@@ -143,39 +128,39 @@ static int get_wlan_low_power_stats(struct PowerStateSubsystem &subsystem) {
         return ret;
 
     subsystem.name = "wlan";
-    subsystem.states.resize(WLAN_STATE_COUNT);
+    subsystem.states.resize(WLAN_STATES_COUNT);
 
     /* Update statistics for Active State */
     state = &subsystem.states[WLAN_STATE_ACTIVE];
     state->name = "Active";
-    state->residencyInMsecSinceBoot = stats[wlan_param_id::CUMULATIVE_TOTAL_ON_TIME_MS];
-    state->totalTransitions = stats[wlan_param_id::DEEP_SLEEP_ENTER_COUNTER];
+    state->residencyInMsecSinceBoot = stats[CUMULATIVE_TOTAL_ON_TIME_MS];
+    state->totalTransitions = stats[DEEP_SLEEP_ENTER_COUNTER];
     state->lastEntryTimestampMs = 0; //FIXME need a new value from Qcom
     state->supportedOnlyInSuspend = false;
 
     /* Update statistics for Deep-Sleep state */
     state = &subsystem.states[WLAN_STATE_DEEP_SLEEP];
     state->name = "Deep-Sleep";
-    state->residencyInMsecSinceBoot = stats[wlan_param_id::CUMULATIVE_SLEEP_TIME_MS];
-    state->totalTransitions = stats[wlan_param_id::DEEP_SLEEP_ENTER_COUNTER];
-    state->lastEntryTimestampMs = stats[wlan_param_id::LAST_DEEP_SLEEP_ENTER_TSTAMP_MS];
+    state->residencyInMsecSinceBoot = stats[CUMULATIVE_SLEEP_TIME_MS];
+    state->totalTransitions = stats[DEEP_SLEEP_ENTER_COUNTER];
+    state->lastEntryTimestampMs = stats[LAST_DEEP_SLEEP_ENTER_TSTAMP_MS];
     state->supportedOnlyInSuspend = false;
 
     return 0;
 }
 
+// Methods from ::android::hardware::power::V1_1::IPower follow.
 Return<void> Power::getSubsystemLowPowerStats(getSubsystemLowPowerStats_cb _hidl_cb) {
 
     hidl_vec<PowerStateSubsystem> subsystems;
     int ret;
 
-    subsystems.resize(subsystem_type::SUBSYSTEM_COUNT);
+    subsystems.resize(SUBSYSTEM_COUNT);
 
     //We currently have only one Subsystem for WLAN
-    ret = get_wlan_low_power_stats(subsystems[subsystem_type::SUBSYSTEM_WLAN]);
-    if (ret != 0) {
+    ret = get_wlan_low_power_stats(subsystems[SUBSYSTEM_WLAN]);
+    if (ret != 0)
         goto done;
-    }
 
     //Add query for other subsystems here
 

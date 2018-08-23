@@ -26,6 +26,7 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 #ifndef __POWER_HELPER_H__
 #define __POWER_HELPER_H__
 
@@ -33,72 +34,63 @@
 extern "C" {
 #endif
 
-#include <hardware/power.h>
+#include "hardware/power.h"
 
-enum platform_param_id {
-    VLOW_COUNT = 0,
-    ACCUMULATED_VLOW_TIME,
-    VMIN_COUNT,
-    ACCUMULATED_VMIN_TIME,
-    RPM_PARAM_COUNT,
 
-    XO_ACCUMULATED_DURATION_APSS = RPM_PARAM_COUNT,
-    XO_COUNT_APSS,
-    XO_ACCUMULATED_DURATION_MPSS,
-    XO_COUNT_MPSS,
-    XO_ACCUMULATED_DURATION_ADSP,
-    XO_COUNT_ADSP,
-    XO_ACCUMULATED_DURATION_SLPI,
-    XO_COUNT_SLPI,
-
-    //Don't add any lines after that line
-    PLATFORM_PARAM_COUNT
-};
-
-enum platform_mode_id {
+enum stats_type {
+    //Platform Stats
     RPM_MODE_XO = 0,
     RPM_MODE_VMIN,
+    RPM_MODE_MAX,
+    XO_VOTERS_START = RPM_MODE_MAX,
+    VOTER_APSS = XO_VOTERS_START,
+    VOTER_MPSS,
+    VOTER_ADSP,
+    VOTER_SLPI,
+    MAX_PLATFORM_STATS,
 
-    //Don't add any lines after that line
-    RPM_MODE_COUNT
-};
-
-#define XO_VOTERS 4
-#define VMIN_VOTERS 0
-
-enum voter_id {
-    APSS,
-    MPSS,
-    ADSP,
-    SLPI,
-
-    //Don't add any lines after that line
-    VOTER_COUNT
+    //WLAN Stats
+    WLAN_POWER_DEBUG_STATS = 0,
+    MAX_WLAN_STATS,
 };
 
 enum subsystem_type {
-    SUBSYSTEM_WLAN,
+    SUBSYSTEM_WLAN = 0,
 
-    //Don't add any lines after that line
+    //Don't add any lines after this line
     SUBSYSTEM_COUNT
 };
 
-enum wlan_param_id {
-    CUMULATIVE_SLEEP_TIME_MS,
+enum wlan_sleep_states {
+    WLAN_STATE_ACTIVE = 0,
+    WLAN_STATE_DEEP_SLEEP,
+
+    //Don't add any lines after this line
+    WLAN_STATES_COUNT
+};
+
+enum wlan_power_params {
+    CUMULATIVE_SLEEP_TIME_MS = 0,
     CUMULATIVE_TOTAL_ON_TIME_MS,
     DEEP_SLEEP_ENTER_COUNTER,
     LAST_DEEP_SLEEP_ENTER_TSTAMP_MS,
 
-    //Don't add any lines after that line
-    WLAN_PARAM_COUNT
+    //Don't add any lines after this line
+    WLAN_POWER_PARAMS_COUNT
 };
 
-enum wlan_state_id {
-    WLAN_STATE_ACTIVE = 0,
-    WLAN_STATE_DEEP_SLEEP,
 
-    //Don't add any lines after that line
-    WLAN_STATE_COUNT
+#define PLATFORM_SLEEP_MODES_COUNT RPM_MODE_MAX
+
+#define MAX_RPM_PARAMS 2
+#define XO_VOTERS (MAX_PLATFORM_STATS - XO_VOTERS_START)
+#define VMIN_VOTERS 0
+
+struct stat_pair {
+    enum stats_type stat;
+    const char *label;
+    const char **parameters;
+    size_t num_parameters;
 };
 
 
