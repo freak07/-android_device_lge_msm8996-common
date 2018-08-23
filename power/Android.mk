@@ -22,21 +22,29 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_MODULE := android.hardware.power@1.1-service.lge.msm8996
 LOCAL_INIT_RC := android.hardware.power@1.1-service.lge.msm8996.rc
-LOCAL_SRC_FILES := service.cpp Power.cpp power-helper.c metadata-parser.c utils.c list.c hint-data.c
+LOCAL_SRC_FILES := service.cpp \
+    Power.cpp \
+    power-helper.c \
+    metadata-parser.c \
+    utils.c \
+    list.c \
+    hint-data.c
+
+LOCAL_C_INCLUDES := external/libxml2/include \
+                    external/icu/icu4c/source/common
 
 # Include target-specific files.
 LOCAL_SRC_FILES += power-8996.c
 
     LOCAL_CFLAGS += -DINTERACTION_BOOST
 
-LOCAL_HEADER_LIBRARIES := libhardware_headers
-
 LOCAL_SHARED_LIBRARIES := \
     libbase \
+    liblog \
     libcutils \
     libhidlbase \
     libhidltransport \
-    liblog \
+    libhardware \
     libutils \
     android.hardware.power@1.1 \
     
