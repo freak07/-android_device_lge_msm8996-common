@@ -342,7 +342,7 @@ void power_hint(power_hint_t hint, void *data)
                 // scaling_min_freq to 1100MHz.
                 int eas_interaction_resources[] = { MIN_FREQ_BIG_CORE_0, 1100, 
                                                     MIN_FREQ_LITTLE_CORE_0, 1100, 
-                                                    STOR_CLK_SCALE_DIS, 0x32, 
+                                                    STORAGE_CLK_SCALING, 0x32, 
                                                     CPUBW_HWMON_MIN_FREQ, 0x33};
                 interaction(duration, sizeof(eas_interaction_resources)/sizeof(eas_interaction_resources[0]), eas_interaction_resources);
             } else { // Scheduler is HMP.
