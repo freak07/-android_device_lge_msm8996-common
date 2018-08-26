@@ -317,12 +317,19 @@ void power_hint(power_hint_t hint, void *data)
                 return;
             }
 
-            int duration = 1500; // 1.5s by default
+            // Default boost duration for taps
+            int min_duration = 350; // 0.350s by default
+            int duration = min_duration;
+            bool isFling = false;
+
+            // Boost duration for scrolls/flings
+            // Minimum boost duration for flings is equal to the minimum duration for taps
             if (data) {
-                int input_duration = *((int*)data) + 750;
-                if (input_duration > duration) {
+                int input_duration = *((int*)data) + 200;
+                if (input_duration > min_duration) {
                     duration = (input_duration > 5750) ? 5750 : input_duration;
                 }
+				isFling = true;
             }
 
             struct timespec cur_boost_timespec;
@@ -339,12 +346,22 @@ void power_hint(power_hint_t hint, void *data)
             // Scheduler is EAS.
             if (strncmp(governor, SCHED_GOVERNOR, strlen(SCHED_GOVERNOR)) == 0) {
                 // Setting the value of foreground schedtune boost to 50 and
-                // scaling_min_freq to 1100MHz.
-                int eas_interaction_resources[] = { MIN_FREQ_BIG_CORE_0, 1100, 
-                                                    MIN_FREQ_LITTLE_CORE_0, 1100, 
-                                                    STORAGE_CLK_SCALING, 0x32, 
-                                                    CPUBW_HWMON_MIN_FREQ, 0x33};
-                interaction(duration, sizeof(eas_interaction_resources)/sizeof(eas_interaction_resources[0]), eas_interaction_resources);
+                // Scrolls/flings
+                if (isFling) {
+                    int eas_interaction_resources[] = { MIN_FREQ_BIG_CORE_0, 1113, 
+                                                        MIN_FREQ_LITTLE_CORE_0, 1113, 
+                                                        STORAGE_CLK_SCALING, 0x32, // For changing top-app boost to 10
+                                                        CPUBW_HWMON_MIN_FREQ, 0x33};
+                    interaction(duration, sizeof(eas_interaction_resources)/sizeof(eas_interaction_resources[0]), eas_interaction_resources);
+                }
+                // Taps
+                else {
+                    int eas_interaction_resources[] = { MIN_FREQ_BIG_CORE_0, 729, 
+                                                        MIN_FREQ_LITTLE_CORE_0, 729, 
+                                                        //STOR_CLK_SCALE_DIS, 0x32, // For changing top-app boost to 50
+                                                        CPUBW_HWMON_MIN_FREQ, 0x33};
+                    interaction(duration, sizeof(eas_interaction_resources)/sizeof(eas_interaction_resources[0]), eas_interaction_resources);
+                }
             } else { // Scheduler is HMP.
                 int hmp_interaction_resources[] = { CPUBW_HWMON_MIN_FREQ, 0x33, 
                                                     MIN_FREQ_BIG_CORE_0, 1000, 
