@@ -102,12 +102,26 @@ PRODUCT_PROPERTY_OVERRIDES += \
     debug.sf.hw=1 \
     debug.egl.hw=1 \
     debug.gralloc.enable_fb_ubwc=1 \
+    debug.composition.type=gpu \
+    debug.egl.profiler=1 \
+    debug.enabletr=true \
+    debug.gralloc.enable_fb_ubwc=1 \
+    debug.overlayui.enable=1 \
+    debug.performance.tuning=1 \
+    debug.sf.latch_unsignaled=1 \
     dev.pm.dyn_samplingrate=1 \
     persist.demo.hdmirotationlock=false \
     persist.sys.wfd.virtual=0 \
     sdm.perf_hint_window=50 \
     persist.hwc.enable_vds=1 \
-    sdm.debug.disable_rotator_split=1
+    sdm.debug.disable_rotator_split=1 \
+    hw3d.force=1 \
+    hwui.disable_vsync=true \
+    hwui.render_dirty_regions=false \
+    ro.config.disable.hw_accel=false \
+    ro.fb.mode=1 \
+    ro.product.gpu.driver=1 \
+    ro.sf.compbypass.enable=0
 
 # HWUI
 PRODUCT_PROPERTY_OVERRIDES += \
