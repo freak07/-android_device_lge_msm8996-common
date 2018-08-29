@@ -1,0 +1,2 @@
+#============= timeservice_app ==============
+allow timeservice_app system_app_data_file:dir { getattr search };

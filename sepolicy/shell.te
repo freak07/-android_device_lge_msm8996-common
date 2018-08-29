@@ -1,0 +1,2 @@
+#============= shell ==============
+allow shell vendor_file:file getattr;

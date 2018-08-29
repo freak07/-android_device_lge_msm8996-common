@@ -1,0 +1,2 @@
+#============= servicemanager ==============
+allow servicemanager vendor_file:file getattr;

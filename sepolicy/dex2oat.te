@@ -1,0 +1,2 @@
+#============= dex2oat ==============
+allow dex2oat vendor_file:file getattr;

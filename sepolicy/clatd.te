@@ -1,0 +1,3 @@
+#============= clatd ==============
+allow clatd system_file:file lock;
+allow clatd vendor_file:file getattr;

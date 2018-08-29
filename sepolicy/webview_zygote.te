@@ -1,0 +1,2 @@
+#============= webview_zygote ==============
+allow webview_zygote vendor_file:file getattr;

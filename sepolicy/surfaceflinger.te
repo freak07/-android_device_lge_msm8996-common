@@ -1,0 +1,6 @@
+#============= surfaceflinger ==============
+allow surfaceflinger self:tcp_socket create;
+allow surfaceflinger shell_exec:file { execute execute_no_trans getattr open read };
+allow surfaceflinger toolbox_exec:file { execute getattr };
+allow surfaceflinger vendor_file:file getattr;
+

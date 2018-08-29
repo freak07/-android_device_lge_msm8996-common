@@ -1,0 +1,2 @@
+#============= netd ==============
+allow netd vendor_file:file getattr;

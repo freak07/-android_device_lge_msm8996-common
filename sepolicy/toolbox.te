@@ -1,0 +1,2 @@
+#============= toolbox ==============
+allow toolbox vendor_file:file getattr;

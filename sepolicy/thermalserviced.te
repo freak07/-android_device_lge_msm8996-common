@@ -1,0 +1,3 @@
+#============= thermalserviced ==============
+allow thermalserviced self:capability dac_override;
+allow thermalserviced vendor_file:file getattr;

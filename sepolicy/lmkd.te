@@ -1,0 +1,2 @@
+#============= lmkd ==============
+allow lmkd vendor_file:file getattr;

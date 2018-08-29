@@ -1,0 +1,10 @@
+#============= bootanim ==============
+allow bootanim self:tcp_socket create;
+allow bootanim shell_exec:file { execute execute_no_trans getattr open read };
+allow bootanim toolbox_exec:file { execute execute_no_trans getattr open read };
+allow bootanim vendor_file:file getattr;
+
+dontaudit bootanim system_data_file:dir read;
+
+# TODO(b/37205419): Remove upon resolution
+dontaudit bootanim kernel:system module_request;

@@ -1,0 +1,2 @@
+#============= sgdisk ==============
+allow sgdisk vendor_file:file getattr;
