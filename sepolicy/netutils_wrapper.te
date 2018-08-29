@@ -1,3 +1,6 @@
+#============= netutils_wrapper ==============
+allow netutils_wrapper vendor_file:file getattr;
+
 # Shutup logspam
 dontaudit netutils_wrapper self:capability sys_module;
 

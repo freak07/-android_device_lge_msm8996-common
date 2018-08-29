@@ -1,3 +1,4 @@
+#============= init ==============
 allow init debugfs:dir mounton;
 allow init mpt_file:dir mounton;
 allow init sensors_data_file:dir mounton;

@@ -1,2 +1,5 @@
+#============= zygote ==============
+allow zygote vendor_file:file getattr;
+
 #gcamtest 3
 #allow zygote sda14:file { getattr };

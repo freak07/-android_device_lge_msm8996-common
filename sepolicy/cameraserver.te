@@ -1,3 +1,6 @@
+#============= cameraserver ==============
+allow cameraserver vendor_file:file getattr;
+
 # communicate with perfd
 allow cameraserver mpctl_data_file:dir search;
 allow cameraserver mpctl_data_file:sock_file write;

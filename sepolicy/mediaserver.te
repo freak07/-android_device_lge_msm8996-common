@@ -1,3 +1,6 @@
+#============= mediaserver ==============
+allow mediaserver vendor_file:file getattr;
+
 set_prop(mediaserver, camera_prop);
 #gcamfixtest
 #============= mediaserver ==============

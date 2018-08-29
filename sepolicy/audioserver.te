@@ -1,3 +1,6 @@
+#============= audioserver ==============
+allow audioserver vendor_file:file getattr;
+
 # communicate with perfd
 allow audioserver mpctl_data_file:dir search;
 allow audioserver mpctl_data_file:sock_file write;

@@ -1,3 +1,6 @@
+#============= mediadrmserver ==============
+allow mediadrmserver vendor_file:file getattr;
+
 # communicate with perfd
 allow mediadrmserver mpctl_data_file:dir search;
 allow mediadrmserver mpctl_data_file:sock_file write;

@@ -1,2 +1,5 @@
+#============= healthd ==============
+allow healthd vendor_file:file getattr;
+
 allow healthd sysfs_thermal:dir search;
 allow healthd sysfs_thermal:file { read open };
