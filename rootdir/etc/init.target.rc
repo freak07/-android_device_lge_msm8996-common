@@ -127,17 +127,14 @@ service perfd /vendor/bin/perfd
     user root
     group root system
     writepid /dev/cpuset/system-background/tasks
-
+    
 service thermal-engine /system/vendor/bin/thermal-engine -c /vendor/etc/thermal-engine-8996.conf
-    class main
-    user root
-    socket thermal-send-client stream 0666 system system
-    socket thermal-recv-client stream 0660 system system
-    socket thermal-recv-passive-client stream 0666 system system
-    group root
-    socket thermal-send-client stream 0666 system system
-    socket thermal-recv-client stream 0660 system system
-    socket thermal-recv-passive-client stream 0666 system system
+   class hal
+   user root
+   group root system diag
+   socket thermal-send-client stream 0666 system system
+   socket thermal-recv-client stream 0660 system system
+   socket thermal-recv-passive-client stream 0666 system system
 
 service time_daemon /vendor/bin/time_daemon
     class late_start
