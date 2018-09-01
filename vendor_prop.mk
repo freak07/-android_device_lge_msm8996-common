@@ -221,3 +221,26 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # WiFi
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.sys.cust.lte_config=true \
+    persist.lg.data.iwlan.enable=true \
+
+# Debug Options
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.dbg.ims_volte_enable=1 \
+    persist.dbg.wfc_avail_ovr=1
+
+# Radio Options
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.radio.data_ltd_sys_ind=1 \
+    persist.radio.data_con_rprt=1 \
+    persist.radio.calls.on.ims=1
+
+# applying GPRI auto-commit
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.lge.radio_gpri=1 \
+    ro.lge.amrwb_gpri=1 \
+    wlan.lge.softap5g=false \
+    persist.lg.data.iwlan=1 \
+    persist.lg.data.iwlan.ipsec.ap=1
