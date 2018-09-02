@@ -319,10 +319,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     telephony-ext
 
-# USB
+# Usb HAL
 PRODUCT_PACKAGES += \
-    android.hardware.usb@1.0-service \
-    com.android.future.usb.accessory
+    android.hardware.usb@1.1-service.lge.msm8996
 
 # Vibrator
 PRODUCT_PACKAGES += \
