@@ -93,6 +93,7 @@ PRODUCT_PACKAGES += \
 
 # Device init scripts
 PRODUCT_PACKAGES += \
+    init.foreground.sh \
     fstab.qcom \
     init.qcom.rc \
     init.qcom.sh \

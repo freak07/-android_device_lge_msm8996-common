@@ -185,6 +185,9 @@ on boot
     chown system drmrpc /sys/devices/soc/75ba000.i2c/i2c-12/12-004a/secure_touch
     write /sys/devices/soc/75ba000.i2c/i2c-12/12-0020/input/input0/update_fw 1
 
+    # Exec init.foreground.sh in background
+    start vendor.foreground_sh    
+
     # Create QMUX deamon socket area
     mkdir /dev/socket/qmux_radio 0770 radio radio
     chmod 2770 /dev/socket/qmux_radio
@@ -831,6 +834,13 @@ service graphics-sh /vendor/bin/init.qcom.graphics.sh
     disabled
     oneshot
 
+service vendor.foreground_sh /vendor/bin/init.foreground.sh
+    class main
+    user root
+    group root system readproc
+    disabled
+    oneshot
+    
 service power-sh /vendor/bin/init.power.sh
     class main
     user root
